@@ -1,5 +1,6 @@
-package com.shen.joke;
+package com.shen.joke.app;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -7,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 
+import com.shen.joke.R;
 import com.shen.joke.app.adapter.JokeAdapter;
 import com.shen.joke.engine.JokePresenter;
 import com.shen.joke.engine.JokeView;
@@ -45,7 +47,12 @@ public class MainActivity extends AppCompatActivity implements JokeView{
 
     @OnClick(R.id.test)
     public void onClick(View view){
+
         jokePresenter.loadQuoteInfoFromNet();
+
+        Intent intent = new Intent(this,JokeActivity.class);
+        startActivity(intent);
+
     }
 
     @Override
