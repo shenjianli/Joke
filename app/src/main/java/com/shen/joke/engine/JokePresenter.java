@@ -128,31 +128,30 @@ public class JokePresenter extends BasePresenter<JokeView> {
                 }
             }
         };
-//        JokeApi jokeApi = NetClient.retrofit().create(JokeApi.class);
-//        jokeApi.queryJokeInfo().map(new HttpResultFunc<JokeData>())
-//                .map(new Func1<JokeData, Boolean>() {
-//                    @Override
-//                    public Boolean call(JokeData jokeData) {
-//                        if (null != jokeData) {
-//                            LogUtils.i("从网络上接收到数据" + jokeData.toString());
-//                            JokeDao jokeDao = JokeApp.getAppInstance().getDaoSession().getJokeDao();
-//                            if (null != jokeDao) {
-//                                List<Joke> jokes = jokeData.getJokes();
-//                                for (Joke joke:jokes) {
-//                                    LogUtils.i("收到的笑话数据：" + joke.toString());
-//                                }
-//                                Thread thread = Thread.currentThread();
-//                                LogUtils.i("当前线程名：" + thread.getName());
-//                                return true;
-//                            }
-//                        }
-//                        return false;
-//                    }
-//                })
-//                .subscribeOn(Schedulers.io())
-//                .unsubscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(jokeSubscriber);
+        JokeApi jokeApi = NetClient.retrofit().create(JokeApi.class);
+        jokeApi.queryJokeInfo().map(new HttpResultFunc<List<Joke>>())
+                .map(new Func1<List<Joke>, Boolean>() {
+                    @Override
+                    public Boolean call(List<Joke> jokes) {
+                        if (null != jokes && jokes.size() > 0) {
+                            LogUtils.i("从网络上接收到数据" + jokeData.toString());
+                            JokeDao jokeDao = JokeApp.getAppInstance().getDaoSession().getJokeDao();
+                            if (null != jokeDao) {
+                                for (Joke joke:jokes) {
+                                    LogUtils.i("收到的笑话数据：" + joke.toString());
+                                }
+                                Thread thread = Thread.currentThread();
+                                LogUtils.i("当前线程名：" + thread.getName());
+                                return true;
+                            }
+                        }
+                        return false;
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(jokeSubscriber);
 
     }
 
