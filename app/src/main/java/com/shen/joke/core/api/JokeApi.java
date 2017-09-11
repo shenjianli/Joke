@@ -8,6 +8,7 @@ import com.shen.joke.model.Joke;
 import java.util.List;
 
 import retrofit2.http.GET;
+import retrofit2.http.Query;
 import rx.Observable;
 
 /**
@@ -19,5 +20,9 @@ public interface JokeApi {
     //请求的url地址
     @GET("joke/query")
     Observable<HttpResult<List<Joke>>> queryJokeInfo();
+
+    //请求的url地址
+    @GET("joke/query_by_date")
+    Observable<HttpResult<List<Joke>>> queryJokeInfoByDate(@Query("date") String date);
 
 }

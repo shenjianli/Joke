@@ -1,8 +1,7 @@
 package com.shen.joke.app;
 
-import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -10,6 +9,7 @@ import android.widget.Button;
 
 import com.shen.joke.R;
 import com.shen.joke.app.adapter.JokeAdapter;
+import com.shen.joke.app.db.JokeDao;
 import com.shen.joke.engine.JokePresenter;
 import com.shen.joke.engine.JokeView;
 import com.shen.joke.model.Joke;
@@ -48,11 +48,14 @@ public class MainActivity extends AppCompatActivity implements JokeView{
     @OnClick(R.id.test)
     public void onClick(View view){
 
-        jokePresenter.loadQuoteInfoFromNet();
-
-        Intent intent = new Intent(this,JokeActivity.class);
-        startActivity(intent);
-
+        //jokePresenter.loadQuoteInfoFromNet();
+        //JokeDataManager.getKeepDataManager().startUpdateData();
+//        Intent intent = new Intent(this,JokeActivity.class);
+//        startActivity(intent);
+        JokeDao jokeDao = JokeApp.getAppInstance().getDaoSession().getJokeDao();
+        List<Joke> jokes = jokeDao.queryBuilder().list();
+        jokeAdapter.fillList(jokes);
+        jokeAdapter.notifyDataSetChanged();
     }
 
     @Override

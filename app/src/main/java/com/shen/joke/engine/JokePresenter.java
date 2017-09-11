@@ -3,16 +3,19 @@ package com.shen.joke.engine;
 import android.content.Context;
 
 import com.shen.joke.app.JokeApp;
+import com.shen.joke.app.db.HistoryDao;
 import com.shen.joke.app.db.JokeDao;
 import com.shen.joke.core.HttpResultFunc;
 import com.shen.joke.core.api.JokeApi;
 import com.shen.joke.core.base.BasePresenter;
+import com.shen.joke.model.History;
 import com.shen.joke.model.Joke;
 import com.shen.netclient.NetClient;
 import com.shen.netclient.util.LogUtils;
 
 import org.greenrobot.greendao.query.QueryBuilder;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import rx.Subscriber;
@@ -100,7 +103,7 @@ public class JokePresenter extends BasePresenter<JokeView> {
     }
 
 
-    public void updateJokeInfo() {
+    public void updateJokeInfo(final String date) {
 
 
         Subscriber<Boolean> jokeSubscriber = new Subscriber<Boolean>() {
@@ -129,17 +132,24 @@ public class JokePresenter extends BasePresenter<JokeView> {
             }
         };
         JokeApi jokeApi = NetClient.retrofit().create(JokeApi.class);
-        jokeApi.queryJokeInfo().map(new HttpResultFunc<List<Joke>>())
+        jokeApi.queryJokeInfoByDate(date).map(new HttpResultFunc<List<Joke>>())
                 .map(new Func1<List<Joke>, Boolean>() {
                     @Override
                     public Boolean call(List<Joke> jokes) {
                         if (null != jokes && jokes.size() > 0) {
-                            LogUtils.i("从网络上接收到数据" + jokeData.toString());
                             JokeDao jokeDao = JokeApp.getAppInstance().getDaoSession().getJokeDao();
                             if (null != jokeDao) {
                                 for (Joke joke:jokes) {
                                     LogUtils.i("收到的笑话数据：" + joke.toString());
+                                    jokeDao.insertWithoutSettingPk(joke);
                                 }
+                                HistoryDao historyDao = JokeApp.getAppInstance().getDaoSession().getHistoryDao();
+                                History history = new History();
+                                history.setUpDate(date);
+                                SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                                String nowDate = sDateFormat.format(new java.util.Date());
+                                history.setHisDate(nowDate);
+                                historyDao.insertWithoutSettingPk(history);
                                 Thread thread = Thread.currentThread();
                                 LogUtils.i("当前线程名：" + thread.getName());
                                 return true;
