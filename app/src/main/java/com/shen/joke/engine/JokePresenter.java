@@ -1,7 +1,6 @@
 package com.shen.joke.engine;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 
 import com.shen.joke.app.Constant;
 import com.shen.joke.app.JokeApp;
@@ -113,6 +112,14 @@ public class JokePresenter extends BasePresenter<JokeView> {
             @Override
             public void onCompleted() {
                 LogUtils.i("表求完成");
+
+//                SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
+//                Calendar c = Calendar.getInstance();
+//                c.add(Calendar.DAY_OF_MONTH, -6);
+//                String jokeDate = sf.format(c.getTime());
+//                System.out.println("前6天日期"+ sf.format(c.getTime()));
+//                updateJokeInfo(jokeDate);
+
             }
 
             @Override
