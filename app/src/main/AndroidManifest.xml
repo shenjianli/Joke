@@ -24,7 +24,8 @@
         <activity android:name=".app.JokeActivity"
             android:screenOrientation="portrait">
         </activity>
-
+        <activity android:name=".app.JokeCardActivity"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

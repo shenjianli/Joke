@@ -1,5 +1,6 @@
 package com.shen.joke.app;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -41,23 +42,23 @@ public class MainActivity extends AppCompatActivity implements JokeView{
 
         jokeAdapter = new JokeAdapter(this);
 
-//        JokeDao jokeDao = JokeApp.getAppInstance().getDaoSession().getJokeDao();
-//        List<Joke> jokes = jokeDao.queryBuilder().list();
-//        jokeAdapter.fillList(jokes);
+        JokeDao jokeDao = JokeApp.getAppInstance().getDaoSession().getJokeDao();
+        List<Joke> jokes = jokeDao.queryBuilder().list();
+        jokeAdapter.fillList(jokes);
 
 
         jokeRv.setLayoutManager(new LinearLayoutManager(this));
         jokeRv.setAdapter(jokeAdapter);
 
+        JokeDataManager.getKeepDataManager().startUpdateData();
     }
 
     @OnClick(R.id.test)
     public void onClick(View view){
 
         //jokePresenter.loadQuoteInfoFromNet();
-        JokeDataManager.getKeepDataManager().startUpdateData();
-//        Intent intent = new Intent(this,JokeActivity.class);
-//        startActivity(intent);
+        Intent intent = new Intent(this,JokeCardActivity.class);
+        startActivity(intent);
 //        JokeDao jokeDao = JokeApp.getAppInstance().getDaoSession().getJokeDao();
 //        List<Joke> jokes = jokeDao.queryBuilder().list();
 //        jokeAdapter.fillList(jokes);
