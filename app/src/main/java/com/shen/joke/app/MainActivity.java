@@ -40,6 +40,12 @@ public class MainActivity extends AppCompatActivity implements JokeView{
         jokePresenter.attachView(this);
 
         jokeAdapter = new JokeAdapter(this);
+
+//        JokeDao jokeDao = JokeApp.getAppInstance().getDaoSession().getJokeDao();
+//        List<Joke> jokes = jokeDao.queryBuilder().list();
+//        jokeAdapter.fillList(jokes);
+
+
         jokeRv.setLayoutManager(new LinearLayoutManager(this));
         jokeRv.setAdapter(jokeAdapter);
 
@@ -49,13 +55,13 @@ public class MainActivity extends AppCompatActivity implements JokeView{
     public void onClick(View view){
 
         //jokePresenter.loadQuoteInfoFromNet();
-        //JokeDataManager.getKeepDataManager().startUpdateData();
+        JokeDataManager.getKeepDataManager().startUpdateData();
 //        Intent intent = new Intent(this,JokeActivity.class);
 //        startActivity(intent);
-        JokeDao jokeDao = JokeApp.getAppInstance().getDaoSession().getJokeDao();
-        List<Joke> jokes = jokeDao.queryBuilder().list();
-        jokeAdapter.fillList(jokes);
-        jokeAdapter.notifyDataSetChanged();
+//        JokeDao jokeDao = JokeApp.getAppInstance().getDaoSession().getJokeDao();
+//        List<Joke> jokes = jokeDao.queryBuilder().list();
+//        jokeAdapter.fillList(jokes);
+//        jokeAdapter.notifyDataSetChanged();
     }
 
     @Override

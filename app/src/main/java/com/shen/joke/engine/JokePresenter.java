@@ -1,13 +1,16 @@
 package com.shen.joke.engine;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
+import com.shen.joke.app.Constant;
 import com.shen.joke.app.JokeApp;
 import com.shen.joke.app.db.HistoryDao;
 import com.shen.joke.app.db.JokeDao;
 import com.shen.joke.core.HttpResultFunc;
 import com.shen.joke.core.api.JokeApi;
 import com.shen.joke.core.base.BasePresenter;
+import com.shen.joke.core.util.SharedPreUtils;
 import com.shen.joke.model.History;
 import com.shen.joke.model.Joke;
 import com.shen.netclient.NetClient;
@@ -139,10 +142,14 @@ public class JokePresenter extends BasePresenter<JokeView> {
                         if (null != jokes && jokes.size() > 0) {
                             JokeDao jokeDao = JokeApp.getAppInstance().getDaoSession().getJokeDao();
                             if (null != jokeDao) {
+
                                 for (Joke joke:jokes) {
                                     LogUtils.i("收到的笑话数据：" + joke.toString());
                                     jokeDao.insertWithoutSettingPk(joke);
                                 }
+
+                                SharedPreUtils.put(context, Constant.DATA_UPDATE_DATE,date);
+
                                 HistoryDao historyDao = JokeApp.getAppInstance().getDaoSession().getHistoryDao();
                                 History history = new History();
                                 history.setUpDate(date);
@@ -150,6 +157,8 @@ public class JokePresenter extends BasePresenter<JokeView> {
                                 String nowDate = sDateFormat.format(new java.util.Date());
                                 history.setHisDate(nowDate);
                                 historyDao.insertWithoutSettingPk(history);
+
+
                                 Thread thread = Thread.currentThread();
                                 LogUtils.i("当前线程名：" + thread.getName());
                                 return true;
