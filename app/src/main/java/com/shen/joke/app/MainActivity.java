@@ -1,6 +1,5 @@
 package com.shen.joke.app;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,7 +13,10 @@ import com.shen.joke.app.db.JokeDao;
 import com.shen.joke.engine.JokePresenter;
 import com.shen.joke.engine.JokeView;
 import com.shen.joke.model.Joke;
+import com.shen.netclient.util.LogUtils;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 
 import butterknife.Bind;
@@ -57,12 +59,22 @@ public class MainActivity extends AppCompatActivity implements JokeView{
     public void onClick(View view){
 
         //jokePresenter.loadQuoteInfoFromNet();
-        Intent intent = new Intent(this,JokeCardActivity.class);
-        startActivity(intent);
+//        Intent intent = new Intent(this,JokeCardActivity.class);
+//        startActivity(intent);
 //        JokeDao jokeDao = JokeApp.getAppInstance().getDaoSession().getJokeDao();
 //        List<Joke> jokes = jokeDao.queryBuilder().list();
 //        jokeAdapter.fillList(jokes);
 //        jokeAdapter.notifyDataSetChanged();
+        SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyy-MM");
+        String nowDate = sDateFormat.format(new java.util.Date());
+
+        SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar c = Calendar.getInstance();
+        System.out.println("当前日期" + sf.format(c.getTime()));
+        c.add(Calendar.DAY_OF_MONTH, -6);
+        System.out.println("前6天日期"+ sf.format(c.getTime()));
+
+        LogUtils.i("日期：" + nowDate);
     }
 
     @Override
