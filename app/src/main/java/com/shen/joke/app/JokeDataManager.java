@@ -33,6 +33,7 @@ public class JokeDataManager {
 
         String lastUpdateDate = SharedPreUtils.get(JokeApp.getAppInstance(),Constant.DATA_UPDATE_DATE,"");
         if(!TextUtils.isEmpty(lastUpdateDate) && TextUtils.equals(lastUpdateDate,nowDate)){
+            LogUtils.i("已经更新过了" + lastUpdateDate);
             return ;
         }
         else if(TextUtils.isEmpty(lastUpdateDate)){

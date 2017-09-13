@@ -37,6 +37,7 @@ public class JokeCardActivity extends AppCompatActivity {
 
     private ArrayList<Joke> jokes = new ArrayList<>();
     private CardJokeAdapter adapter;
+    private JokeDao jokeDao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,8 +46,8 @@ public class JokeCardActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
 
-        JokeDao jokeDao = JokeApp.getAppInstance().getDaoSession().getJokeDao();
-        List<Joke> jokeLists = jokeDao.queryBuilder().list();
+        jokeDao = JokeApp.getAppInstance().getDaoSession().getJokeDao();
+        List<Joke> jokeLists = jokeDao.queryBuilder().orderAsc(JokeDao.Properties.Num).orderAsc(JokeDao.Properties.Id).where(JokeDao.Properties.Num.eq(0)).list();
         jokes.addAll(jokeLists);
 
         adapter = new CardJokeAdapter(this, jokes);
@@ -60,12 +61,22 @@ public class JokeCardActivity extends AppCompatActivity {
             }
             @Override
             public void onLeftCardExit(Object dataObject) {
-                makeToast(JokeCardActivity.this, "不喜欢");
+                //makeToast(JokeCardActivity.this, "不喜欢");
+                if(dataObject instanceof Joke){
+                    Joke joke = (Joke)dataObject;
+                    joke.setNum(joke.getNum() + 1);
+                    jokeDao.update(joke);
+                }
             }
 
             @Override
             public void onRightCardExit(Object dataObject) {
-                makeToast(JokeCardActivity.this, "喜欢");
+                //makeToast(JokeCardActivity.this, "喜欢");
+                if(dataObject instanceof Joke){
+                    Joke joke = (Joke)dataObject;
+                    joke.setNum(joke.getNum() + 1);
+                    jokeDao.update(joke);
+                }
             }
 
             @Override
