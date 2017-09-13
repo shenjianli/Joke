@@ -25,4 +25,8 @@ public interface JokeApi {
     @GET("joke/query_by_date")
     Observable<HttpResult<List<Joke>>> queryJokeInfoByDate(@Query("date") String date);
 
+    //请求的url地址
+    @GET("joke/query/base")
+    Observable<HttpResult<List<Joke>>> queryJokeBaseInfo(@Query("num") String num);
+
 }
