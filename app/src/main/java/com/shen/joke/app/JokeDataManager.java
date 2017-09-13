@@ -3,12 +3,15 @@ package com.shen.joke.app;
 import android.text.TextUtils;
 
 import com.shen.joke.app.db.HistoryDao;
+import com.shen.joke.app.db.JokeDao;
 import com.shen.joke.core.util.SharedPreUtils;
 import com.shen.joke.engine.JokePresenter;
 import com.shen.joke.model.History;
+import com.shen.joke.model.Joke;
 import com.shen.netclient.util.LogUtils;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,10 +22,34 @@ public class JokeDataManager {
     private static final JokeDataManager keepDataManager = new JokeDataManager();
 
     private JokeDataManager(){
+        init();
+    }
+
+    private void init() {
+        if(null == jokes){
+            jokes = new ArrayList<>();
+        }
+        JokeDao jokeDao = JokeApp.getAppInstance().getDaoSession().getJokeDao();
+        List<Joke> jokeLists = jokeDao.queryBuilder().orderAsc(JokeDao.Properties.Num).orderAsc(JokeDao.Properties.Id).where(JokeDao.Properties.Num.eq(0)).list();
+        jokes.addAll(jokeLists);
     }
 
     public static JokeDataManager getKeepDataManager(){
         return keepDataManager;
+    }
+
+    private List<Joke> jokes;
+    private int jokeNums;
+
+    public int getJokeNum() {
+        return jokeNums;
+    }
+
+    public List<Joke> getJokeList(){
+        if(null == jokes || jokes.size() <=0){
+            init();
+        }
+        return  jokes;
     }
 
     public void startUpdateData(){

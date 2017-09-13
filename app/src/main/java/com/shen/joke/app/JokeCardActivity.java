@@ -44,11 +44,8 @@ public class JokeCardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_joke);
         ButterKnife.bind(this);
-
-
-        jokeDao = JokeApp.getAppInstance().getDaoSession().getJokeDao();
-        List<Joke> jokeLists = jokeDao.queryBuilder().orderAsc(JokeDao.Properties.Num).orderAsc(JokeDao.Properties.Id).where(JokeDao.Properties.Num.eq(0)).list();
-        jokes.addAll(jokeLists);
+        
+        jokes.addAll(JokeDataManager.getKeepDataManager().getJokeList());
 
         adapter = new CardJokeAdapter(this, jokes);
 

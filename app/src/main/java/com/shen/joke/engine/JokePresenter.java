@@ -1,7 +1,6 @@
 package com.shen.joke.engine;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.text.TextUtils;
 
 import com.shen.joke.app.Constant;
@@ -190,7 +189,7 @@ public class JokePresenter extends BasePresenter<JokeView> {
                             return ;
                         }
                     }
-                    updateJokeBaseInfo("50");
+                    updateJokeBaseInfo("100");
                 }
             }
 
