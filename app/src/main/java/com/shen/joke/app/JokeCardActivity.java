@@ -1,11 +1,11 @@
 package com.shen.joke.app;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.shen.joke.R;
@@ -13,6 +13,7 @@ import com.shen.joke.app.adapter.CardJokeAdapter;
 import com.shen.joke.app.db.JokeDao;
 import com.shen.joke.app.flingswipe.SwipeFlingAdapterView;
 import com.shen.joke.model.Joke;
+import com.shen.netclient.util.LogUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,8 +31,6 @@ public class JokeCardActivity extends AppCompatActivity {
     ImageView info;
     @Bind(R.id.right)
     ImageView right;
-    @Bind(R.id.joke_bottom_layout)
-    LinearLayout jokeBottomLayout;
     @Bind(R.id.frame)
     SwipeFlingAdapterView frame;
 
@@ -44,7 +43,9 @@ public class JokeCardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_joke);
         ButterKnife.bind(this);
-        
+
+        jokeDao = JokeApp.getAppInstance().getDaoSession().getJokeDao();
+
         jokes.addAll(JokeDataManager.getKeepDataManager().getJokeList());
 
         adapter = new CardJokeAdapter(this, jokes);
@@ -63,6 +64,7 @@ public class JokeCardActivity extends AppCompatActivity {
                     Joke joke = (Joke)dataObject;
                     joke.setNum(joke.getNum() + 1);
                     jokeDao.update(joke);
+                    LogUtils.i(joke.toString());
                 }
             }
 
@@ -73,6 +75,7 @@ public class JokeCardActivity extends AppCompatActivity {
                     Joke joke = (Joke)dataObject;
                     joke.setNum(joke.getNum() + 1);
                     jokeDao.update(joke);
+                    LogUtils.i(joke.toString());
                 }
             }
 
@@ -101,6 +104,12 @@ public class JokeCardActivity extends AppCompatActivity {
             @Override
             public void onItemClicked(int itemPosition, Object dataObject) {
                 makeToast(JokeCardActivity.this, "点击图片");
+                if(dataObject instanceof Joke){
+                    Joke joke = (Joke) dataObject;
+                    Intent intent = new Intent(JokeCardActivity.this,JokeDetailActivity.class);
+                    intent.putExtra("joke_id",String.valueOf(joke.getId()));
+                    startActivity(intent);
+                }
             }
         });
     }
@@ -120,10 +129,12 @@ public class JokeCardActivity extends AppCompatActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.left:
+                frame.getTopCardListener().selectLeft();
                 break;
             case R.id.info:
                 break;
             case R.id.right:
+                frame.getTopCardListener().selectRight();
                 break;
         }
     }

@@ -30,7 +30,7 @@ public class JokeDataManager {
             jokes = new ArrayList<>();
         }
         JokeDao jokeDao = JokeApp.getAppInstance().getDaoSession().getJokeDao();
-        List<Joke> jokeLists = jokeDao.queryBuilder().orderAsc(JokeDao.Properties.Num).orderAsc(JokeDao.Properties.Id).where(JokeDao.Properties.Num.eq(0)).list();
+        List<Joke> jokeLists = jokeDao.queryBuilder().orderAsc(JokeDao.Properties.Num).orderDesc(JokeDao.Properties.Id).where(JokeDao.Properties.Num.eq(0)).list();
         jokes.addAll(jokeLists);
     }
 

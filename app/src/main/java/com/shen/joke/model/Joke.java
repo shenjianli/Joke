@@ -79,5 +79,14 @@ public class Joke {
         this.num = num;
     }
 
-
+    @Override
+    public String toString() {
+        return "Joke{" +
+                "id=" + id +
+                ", site='" + site + '\'' +
+                ", content='" + content + '\'' +
+                ", date='" + date + '\'' +
+                ", num=" + num +
+                '}';
+    }
 }
