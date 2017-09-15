@@ -27,6 +27,7 @@ public class HistoryDao extends AbstractDao<History, Long> {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property UpDate = new Property(1, String.class, "upDate", false, "update_date");
         public final static Property HisDate = new Property(2, String.class, "hisDate", false, "his_date");
+        public final static Property UpdateId = new Property(3, String.class, "updateId", false, "his_id");
     }
 
 
@@ -44,7 +45,8 @@ public class HistoryDao extends AbstractDao<History, Long> {
         db.execSQL("CREATE TABLE " + constraint + "\"HISTORY\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
                 "\"update_date\" TEXT," + // 1: upDate
-                "\"his_date\" TEXT);"); // 2: hisDate
+                "\"his_date\" TEXT," + // 2: hisDate
+                "\"his_id\" TEXT);"); // 3: updateId
     }
 
     /** Drops the underlying database table. */
@@ -71,6 +73,11 @@ public class HistoryDao extends AbstractDao<History, Long> {
         if (hisDate != null) {
             stmt.bindString(3, hisDate);
         }
+ 
+        String updateId = entity.getUpdateId();
+        if (updateId != null) {
+            stmt.bindString(4, updateId);
+        }
     }
 
     @Override
@@ -91,6 +98,11 @@ public class HistoryDao extends AbstractDao<History, Long> {
         if (hisDate != null) {
             stmt.bindString(3, hisDate);
         }
+ 
+        String updateId = entity.getUpdateId();
+        if (updateId != null) {
+            stmt.bindString(4, updateId);
+        }
     }
 
     @Override
@@ -103,7 +115,8 @@ public class HistoryDao extends AbstractDao<History, Long> {
         History entity = new History( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
             cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // upDate
-            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2) // hisDate
+            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // hisDate
+            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3) // updateId
         );
         return entity;
     }
@@ -113,6 +126,7 @@ public class HistoryDao extends AbstractDao<History, Long> {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setUpDate(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
         entity.setHisDate(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
+        entity.setUpdateId(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
      }
     
     @Override
