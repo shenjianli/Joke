@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements JokeView{
         jokeRv.setLayoutManager(new LinearLayoutManager(this));
         jokeRv.setAdapter(jokeAdapter);
 
-        JokeDataManager.getKeepDataManager().startUpdateData();
+        JokeDataManager.getKeepDataManager().startUpdateJokeData();
     }
 
     @OnClick(R.id.test)

@@ -7,4 +7,6 @@ package com.shen.joke.app;
 public class Constant {
 
     public static final String DATA_UPDATE_DATE = "data_update_data";
+
+    public static final String DATA_UPDATE_ID = "data_update_id";
 }

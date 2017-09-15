@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.shen.joke.app.Constant;
 import com.shen.joke.app.JokeApp;
+import com.shen.joke.app.JokeDataManager;
 import com.shen.joke.app.db.HistoryDao;
 import com.shen.joke.app.db.JokeDao;
 import com.shen.joke.core.HttpResultFunc;
@@ -106,6 +107,80 @@ public class JokePresenter extends BasePresenter<JokeView> {
     }
 
 
+    //
+    public void updateJokeDataInfo(String lastId, String num) {
+
+
+        Subscriber<Boolean> jokeSubscriber = new Subscriber<Boolean>() {
+            @Override
+            public void onCompleted() {
+                LogUtils.i("表求完成");
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                LogUtils.i(e.getStackTrace().toString());
+                if(null != mMvpView){
+                    mMvpView.showError(e.getMessage());
+                    mMvpView.hideLoading();
+                }
+            }
+
+            @Override
+            public void onNext(Boolean success) {
+                LogUtils.i("获取数据成功");
+                Thread thread = Thread.currentThread();
+                com.shen.netclient.util.LogUtils.i("当前线程名：" + thread.getName());
+                if(success){
+                    JokeDataManager.getKeepDataManager().updateJokeList();
+                }
+                if(null != mMvpView){
+                    mMvpView.hideLoading();
+                }
+            }
+        };
+        JokeApi jokeApi = NetClient.retrofit().create(JokeApi.class);
+        jokeApi.updateJokeBaseInfo(lastId,num).map(new HttpResultFunc<List<Joke>>())
+                .map(new Func1<List<Joke>, Boolean>() {
+                    @Override
+                    public Boolean call(List<Joke> jokes) {
+                        if (null != jokes && jokes.size() > 0) {
+                            JokeDao jokeDao = JokeApp.getAppInstance().getDaoSession().getJokeDao();
+                            if (null != jokeDao) {
+
+                                for (Joke joke:jokes) {
+                                    LogUtils.i("收到的笑话数据：" + joke.toString());
+                                    jokeDao.insertWithoutSettingPk(joke);
+                                }
+
+                                Joke update = jokes.get(0);
+                                long updateId = update.getId();
+                                SharedPreUtils.put(context,Constant.DATA_UPDATE_ID,String.valueOf(updateId));
+
+                                HistoryDao historyDao = JokeApp.getAppInstance().getDaoSession().getHistoryDao();
+                                History history = new History();
+                                history.setUpDate(update.getDate());
+                                SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                                String nowDate = sDateFormat.format(new java.util.Date());
+                                history.setHisDate(nowDate);
+                                historyDao.insertWithoutSettingPk(history);
+                                SharedPreUtils.put(context, Constant.DATA_UPDATE_DATE,nowDate);
+
+
+                                Thread thread = Thread.currentThread();
+                                LogUtils.i("当前线程名：" + thread.getName());
+                                return true;
+                            }
+                        }
+                        return false;
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(jokeSubscriber);
+
+    }
 
     private void updateJokeBaseInfo( String num) {
 

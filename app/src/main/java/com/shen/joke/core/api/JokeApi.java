@@ -29,4 +29,8 @@ public interface JokeApi {
     @GET("joke/query/base")
     Observable<HttpResult<List<Joke>>> queryJokeBaseInfo(@Query("num") String num);
 
+    //请求的url地址
+    @GET("/joke/update")
+    Observable<HttpResult<List<Joke>>> updateJokeBaseInfo(@Query("lastId") String lastId, @Query("num") String num);
+
 }

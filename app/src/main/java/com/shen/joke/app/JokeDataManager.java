@@ -84,4 +84,58 @@ public class JokeDataManager {
         quotePresenter.updateJokeInfo(nowDate);
     }
 
+    public void startUpdateJokeData(){
+
+
+        SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String nowDate = sDateFormat.format(new java.util.Date());
+
+        String lastUpdateDate = SharedPreUtils.get(JokeApp.getAppInstance(),Constant.DATA_UPDATE_DATE,"");
+        if(!TextUtils.isEmpty(lastUpdateDate) && TextUtils.equals(lastUpdateDate,nowDate)){
+            LogUtils.i("今天已经更新过了" + lastUpdateDate);
+            return ;
+        }
+        else if(TextUtils.isEmpty(lastUpdateDate)){
+
+            HistoryDao historyDao = JokeApp.getAppInstance().getDaoSession().getHistoryDao();
+            if (null != historyDao) {
+                List<History> update = historyDao.queryBuilder().orderDesc(HistoryDao.Properties.Id).list();
+                for(History history : update){
+                    LogUtils.i( "更新历史：" + history.getUpDate());
+                    String historyDate = history.getHisDate();
+                    if(TextUtils.equals(historyDate,nowDate)){
+                        LogUtils.i(nowDate + " 已经更新过了");
+                        return;
+                    }
+                }
+            }
+
+        }
+
+        String lastId = SharedPreUtils.get(JokeApp.getAppInstance(),Constant.DATA_UPDATE_ID,"0");
+        if(TextUtils.equals(lastId,"0")){
+            HistoryDao historyDao = JokeApp.getAppInstance().getDaoSession().getHistoryDao();
+            if (null != historyDao) {
+                List<History> update = historyDao.queryBuilder().orderDesc(HistoryDao.Properties.Id).list();
+                if(null != update && update.size() > 0){
+                    History lastHis = update.get(0);
+                    lastId = lastHis.getUpdateId();
+                }
+            }
+        }
+
+        LogUtils.i("请求的日期为：" + nowDate);
+        JokePresenter quotePresenter = new JokePresenter(JokeApp.getAppInstance());
+        quotePresenter.updateJokeDataInfo(lastId,"10");
+    }
+
+    public void updateJokeList(){
+        if(null == jokes){
+            jokes = new ArrayList<>();
+        }
+        jokes.clear();
+        JokeDao jokeDao = JokeApp.getAppInstance().getDaoSession().getJokeDao();
+        List<Joke> jokeLists = jokeDao.queryBuilder().orderAsc(JokeDao.Properties.Num).orderDesc(JokeDao.Properties.Id).where(JokeDao.Properties.Num.eq(0)).list();
+        jokes.addAll(jokeLists);
+    }
 }
