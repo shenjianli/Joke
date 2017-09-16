@@ -128,11 +128,16 @@ public class JokePresenter extends BasePresenter<JokeView> {
 
             @Override
             public void onNext(Boolean success) {
-                LogUtils.i("获取数据成功");
+                LogUtils.i("获取数据成功" + success);
                 Thread thread = Thread.currentThread();
                 com.shen.netclient.util.LogUtils.i("当前线程名：" + thread.getName());
                 if(success){
-                    JokeDataManager.getKeepDataManager().updateJokeList();
+                    SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                    String nowDate = sDateFormat.format(new java.util.Date());
+                    String lastDate = SharedPreUtils.get(context,Constant.DATA_UPDATE_DATE,nowDate);
+                    if(TextUtils.equals(nowDate,lastDate)){
+                        JokeDataManager.getKeepDataManager().updateJokeList();
+                    }
                 }
                 if(null != mMvpView){
                     mMvpView.hideLoading();
